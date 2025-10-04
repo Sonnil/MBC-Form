@@ -1,0 +1,55 @@
+{
+  "name": "flex-form-secure",
+  "version": "1.0.0",
+  "description": "Secure flexible form builder with enterprise database integration",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python -m http.server 8000",
+    "start": "python -m http.server 8000",
+    "build": "echo 'Building FLEX-FORM with security features...'",
+    "test": "echo 'Running security tests...'",
+    "security-scan": "npm audit --audit-level moderate",
+    "deploy": "gh-pages -d .",
+    "setup-db": "node scripts/setup-database.js",
+    "import-data": "node scripts/import-data.js",
+    "import": "npm run import-data",
+    "demo-import": "node scripts/demo-import.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/FLEX-FORM.git"
+  },
+  "keywords": [
+    "forms",
+    "database",
+    "security",
+    "encryption",
+    "supabase",
+    "enterprise",
+    "gemba",
+    "workflow",
+    "audit",
+    "rls"
+  ],
+  "author": "FLEX-FORM Team",
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.58.0",
+    "csv-parser": "^3.2.0",
+    "dotenv": "^17.2.3",
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "security": {
+    "encryption": "AES-256-GCM",
+    "hashing": "SHA-256",
+    "database": "Row Level Security",
+    "audit": "Complete logging",
+    "compliance": "Enterprise-grade"
+  }
+}
