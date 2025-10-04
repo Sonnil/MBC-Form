@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBC Form Portal - Redirecting...</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white;
+        }
+        .redirect-message { 
+            text-align: center; 
+            padding: 40px; 
+            background: rgba(255,255,255,0.1); 
+            border-radius: 15px; 
+            backdrop-filter: blur(10px);
+        }
+        .spinner { 
+            border: 3px solid rgba(255,255,255,0.3); 
+            border-top: 3px solid white; 
+            border-radius: 50%; 
+            width: 30px; 
+            height: 30px; 
+            animation: spin 1s linear infinite; 
+            margin: 20px auto; 
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+    <script>
+        // Redirect to user portal immediately
+        window.location.replace('./user-portal.html');
+    </script>
+</head>
+<body>
+    <div class="redirect-message">
+        <h2>🚀 MBC Form Portal</h2>
+        <div class="spinner"></div>
+        <p>Redirecting to User Portal...</p>
+        <p><a href="./user-portal.html" style="color: #ffeb3b;">Click here if not redirected automatically</a></p>
+    </div>
+</body>
+</html>

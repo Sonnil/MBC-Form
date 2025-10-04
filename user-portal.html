@@ -1,0 +1,1924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBC Form Portal Dashboard - Database Connected</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js?v=1.5"></script>
+    <script src="secure-key-manager.js?v=1.5"></script>
+    <script src="secure-config.js?v=1.5"></script>
+    <script>
+        // *** MBC FORM PORTAL v1.0 *** - (2025-10-04-MODAL-FIX) ***
+        console.log('🚀 MBC FORM PORTAL v1.0: Clean repository start');
+        window.EMBEDDED_CONFIG = {
+            SUPABASE_URL: 'https://rctzljfqsafjmbljeyrb.supabase.co',
+            SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjdHpsamZxc2Fmam1ibGpleXJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk1MTY5NDAsImV4cCI6MjA3NTA5Mjk0MH0.cwIecLyT7z3eQhUl0HWimrWZUDCkO6-jSdxO8xBLcuc',
+            _version: '1.0-FRESH-GITHUB-REBUILD',
+            _timestamp: '2025-10-03T17:43:00Z',
+            _deployTime: new Date().getTime()
+        };
+        console.log('� MBC FORM PORTAL v1.0 - NEW GEMBA REPO �');
+        console.log('⏰ Deploy Time:', window.EMBEDDED_CONFIG._deployTime);
+        console.log('� Should connect to database with 6,220 records');
+        console.log('� URL: https://sonnil.github.io/MBC-Form/user-portal.html');
+    </script>
+    <script src="secure-supabase-connector.js?v=1.5"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+
+        .nav-tab {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active {
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(20px);
+            min-height: 600px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            position: relative;
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            opacity: 0.9;
+        }
+
+        .clickable-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .clickable-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .clickable-card:active {
+            transform: translateY(-2px);
+        }
+
+        .forms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .form-card {
+            background: white;
+            border: 2px solid #e1e5e9;
+            border-radius: 15px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .form-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border-color: #667eea;
+        }
+
+        .form-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .form-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .form-card h3 {
+            color: #2d3748;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .field-badge {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .form-card p {
+            color: #718096;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .form-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .form-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e1e5e9;
+        }
+
+        .form-header h2 {
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .form-header p {
+            color: #718096;
+        }
+
+        .form-field {
+            margin-bottom: 25px;
+        }
+
+        .form-field label {
+            display: block;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .form-field label .required {
+            color: #e53e3e;
+        }
+
+        .form-field input,
+        .form-field textarea,
+        .form-field select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-field input:focus,
+        .form-field textarea:focus,
+        .form-field select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-field textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .radio-group,
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 8px;
+        }
+
+        .radio-item,
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e1e5e9;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 2px solid #e1e5e9;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .back-btn {
+            background: #f7fafc;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .success-message {
+            background: #c6f6d5;
+            color: #2f855a;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #38a169;
+        }
+
+        .error-message {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #e53e3e;
+        }
+
+        .warning-message {
+            background: #faf089;
+            color: #d69e2e;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ecc94b;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-tab {
+                width: 200px;
+                text-align: center;
+            }
+
+            .content {
+                padding: 25px;
+            }
+
+            .forms-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 MBC Form Portal Dashboard</h1>
+            <p>Submit data using secure, dynamic forms</p>
+            <div style="margin-top: 10px; background: rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 20px; font-size: 0.85rem;">
+                � MBC FORM PORTAL v3.0 - DATABASE CONNECTED: 2025-10-04 �
+            </div>
+            <div style="margin-top: 15px;">
+                <a href="index.html" style="color: rgba(255,255,255,0.8); text-decoration: none; font-size: 0.9rem;">
+                    ⚙️ Admin Portal
+                </a>
+            </div>
+        </div>
+
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="showSection('dashboard')">
+                📊 Dashboard
+            </div>
+            <div class="nav-tab" onclick="showSection('forms')">
+                📝 Forms
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="section active">
+                <h2 style="margin-bottom: 25px; color: #2d3748;">📊 Dashboard Overview</h2>
+                
+                <div class="dashboard-grid">
+                    <div class="stat-card clickable-card" onclick="showDataModal('forms')" title="Click to view available forms">
+                        <h3>4</h3>
+                        <p>Available Forms</p>
+                        <i class="fas fa-chart-line" style="position: absolute; top: 15px; right: 15px; opacity: 0.3;"></i>
+                    </div>
+                    <div class="stat-card clickable-card" onclick="showDataModal('total')" title="Click to view all submissions">
+                        <h3 id="totalSubmissions">0</h3>
+                        <p>Total Submissions</p>
+                        <i class="fas fa-database" style="position: absolute; top: 15px; right: 15px; opacity: 0.3;"></i>
+                    </div>
+                    <div class="stat-card clickable-card" onclick="showDataModal('month')" title="Click to view this month's submissions">
+                        <h3 id="thisMonth">0</h3>
+                        <p>This Month</p>
+                        <i class="fas fa-calendar-alt" style="position: absolute; top: 15px; right: 15px; opacity: 0.3;"></i>
+                    </div>
+                </div>
+
+                <div style="background: #f7fafc; padding: 25px; border-radius: 15px; margin-top: 20px;">
+                    <h3 style="color: #2d3748; margin-bottom: 15px;">🔗 Database Status</h3>
+                    <div id="connectionStatus" style="padding: 10px; border-radius: 8px; background: #e2e8f0; color: #4a5568;">
+                        Ready to connect to database
+                    </div>
+                </div>
+            </div>
+
+            <!-- Forms Section -->
+            <div id="forms" class="section">
+                <div id="formSelection">
+                    <h2 style="margin-bottom: 25px; color: #2d3748;">📝 Available Forms</h2>
+                    
+                    <div class="forms-grid" id="formsContainer">
+                        <!-- Gemba Intake Form -->
+                        <div class="form-card" onclick="selectForm('gemba_intake')">
+                            <div class="form-card-header">
+                                <h3>Gemba Intake Form</h3>
+                                <span class="field-badge">30 Fields</span>
+                            </div>
+                            <p>Comprehensive Gemba walk planning and deviation intake form with all required fields for process improvement and root cause analysis.</p>
+                            <button class="form-btn" onclick="event.stopPropagation(); selectForm('gemba_intake')">
+                                Use This Form →
+                            </button>
+                        </div>
+
+                        <!-- Gemba Information Request -->
+                        <div class="form-card" onclick="selectForm('gemba_request')">
+                            <div class="form-card-header">
+                                <h3>Gemba Information Request</h3>
+                                <span class="field-badge">16 Fields</span>
+                            </div>
+                            <p>Simplified form for requesting Gemba walks and information gathering sessions with priority levels and participant requirements.</p>
+                            <button class="form-btn" onclick="event.stopPropagation(); selectForm('gemba_request')">
+                                Use This Form →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Filling Section -->
+                <div id="formFilling" style="display: none;">
+                    <button class="back-btn" onclick="backToFormSelection()">
+                        ← Back to Form Selection
+                    </button>
+                    
+                    <div class="form-container">
+                        <div class="form-header">
+                            <h2 id="currentFormTitle">Form Title</h2>
+                            <p id="currentFormDescription">Form Description</p>
+                        </div>
+
+                        <form id="dynamicForm">
+                            <div id="formFields">
+                                <!-- Dynamic form fields will be inserted here -->
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="clearForm()">
+                                    Clear Form
+                                </button>
+                                <button type="button" class="btn btn-secondary" onclick="saveDraft()">
+                                    Save Draft
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    Submit Form
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Form Templates Data
+        const formTemplates = {
+            gemba_intake: {
+                name: 'Gemba Intake Form',
+                description: 'Comprehensive Gemba walk planning and deviation intake form',
+                fields: [
+                    // Team Information
+                    { name: 'gemba_coach', label: 'Gemba Coach', type: 'text', required: true, placeholder: 'Name of designated Gemba Coach' },
+                    { name: 'facilitator', label: 'Facilitator', type: 'text', required: true, placeholder: 'Session facilitator name' },
+                    { name: 'scribe', label: 'Scribe', type: 'text', required: true, placeholder: 'Person recording the session' },
+                    { name: 'department_representatives', label: 'Department Representatives', type: 'textarea', required: true, placeholder: 'List all department representatives attending' },
+                    
+                    // SME Requirements
+                    { name: 'sme_quality', label: 'Quality Assurance SME Required', type: 'checkbox' },
+                    { name: 'sme_regulatory', label: 'Regulatory Affairs SME Required', type: 'checkbox' },
+                    { name: 'sme_manufacturing', label: 'Manufacturing SME Required', type: 'checkbox' },
+                    { name: 'sme_engineering', label: 'Engineering SME Required', type: 'checkbox' },
+                    
+                    // Event Details
+                    { name: 'event_title', label: 'Event Title', type: 'text', required: true, placeholder: 'Clear, descriptive title of the event/issue' },
+                    { name: 'team', label: 'Responsible Team', type: 'text', required: true, placeholder: 'Primary team responsible for this area' },
+                    { name: 'event_description', label: 'Event Description', type: 'textarea', required: true, placeholder: 'Comprehensive description of what occurred' },
+                    
+                    // 5W Analysis
+                    { name: 'why_occurred', label: 'Why - Why did this occur?', type: 'textarea', required: true, placeholder: 'Root cause analysis and contributing factors' },
+                    { name: 'who_detected', label: 'Who - Who detected this issue?', type: 'text', required: true, placeholder: 'Name/role of person who first identified the issue' },
+                    { name: 'how_detected', label: 'How - How was this detected?', type: 'textarea', required: true, placeholder: 'Detection method, monitoring system, visual inspection, etc.' },
+                    { name: 'how_much_impact', label: 'Impact Level', type: 'select', required: true, options: ['Low - Minimal impact', 'Medium - Moderate impact', 'High - Significant impact', 'Critical - Severe impact'] },
+                    
+                    // Location & Process
+                    { name: 'department', label: 'Department', type: 'select', required: true, options: ['Manufacturing', 'Quality Control', 'Engineering', 'Operations', 'Maintenance', 'Safety', 'Regulatory', 'Other'] },
+                    { name: 'building', label: 'Building', type: 'text', required: true, placeholder: 'Building identifier or name' },
+                    { name: 'room', label: 'Room', type: 'text', required: true, placeholder: 'Room number, name, or area designation' },
+                    { name: 'process', label: 'Process', type: 'text', required: true, placeholder: 'Specific process involved' },
+                    
+                    // Timing
+                    { name: 'date_detected', label: 'Date Detected', type: 'date', required: true },
+                    { name: 'date_occurred_known', label: 'Is the exact date when this occurred known?', type: 'radio', required: true, options: ['Yes', 'No'] },
+                    
+                    // Impact Assessment
+                    { name: 'asset_impact', label: 'Asset Impact Assessment', type: 'select', required: true, options: ['None - No equipment impact', 'Minor - Minimal equipment effect', 'Moderate - Some equipment issues', 'Significant - Major equipment impact'] },
+                    { name: 'product_impact', label: 'Product Impact Assessment', type: 'select', required: true, options: ['None - No product affected', 'Potential - Product may be affected', 'Confirmed - Product definitely affected', 'Under Investigation - Impact being assessed'] },
+                    
+                    // Actions
+                    { name: 'immediate_actions', label: 'Immediate Actions Taken', type: 'textarea', required: true, placeholder: 'Describe all immediate corrective actions taken' },
+                    
+                    // Criticality Assessment
+                    { name: 'criticality_safety', label: 'Critical to Safety?', type: 'radio', required: true, options: ['Yes', 'No'] },
+                    { name: 'criticality_quality', label: 'Critical to Quality?', type: 'radio', required: true, options: ['Yes', 'No'] },
+                    { name: 'criticality_delivery', label: 'Critical to Delivery?', type: 'radio', required: true, options: ['Yes', 'No'] },
+                    
+                    // Action Items
+                    { name: 'action_item_1', label: 'Action Item #1', type: 'text', placeholder: 'Description of first action item' },
+                    { name: 'action_owner_1', label: 'Action Owner #1', type: 'text', placeholder: 'Person responsible for action item #1' },
+                    { name: 'action_due_1', label: 'Due Date #1', type: 'date' }
+                ]
+            },
+            gemba_request: {
+                name: 'Gemba Information Request',
+                description: 'Request form for Gemba walks and information gathering sessions',
+                fields: [
+                    { name: 'request_id', label: 'Request ID', type: 'text', required: true, placeholder: 'Enter unique request identifier (e.g., GIR-2024-001)' },
+                    { name: 'short_description', label: 'Short Description', type: 'text', required: true, placeholder: 'Brief one-line description of the request' },
+                    { name: 'contact_organizer', label: 'Contact / Organizer', type: 'email', required: true, placeholder: 'Email of person organizing or requesting the Gemba' },
+                    { name: 'location', label: 'Location (building/room #/lab)', type: 'text', required: true, placeholder: 'Specific location where Gemba will take place' },
+                    { name: 'event_occurred', label: 'When did the event occur?', type: 'datetime-local', required: true },
+                    { name: 'event_detected', label: 'When was the event detected?', type: 'datetime-local', required: true },
+                    { name: 'expected_results', label: 'Expected Results', type: 'textarea', required: true, placeholder: 'What specific outcomes or insights are expected from this Gemba walk?' },
+                    { name: 'priority_level', label: 'Priority Level', type: 'select', required: true, options: ['Low', 'Medium', 'High', 'Critical', 'Emergency'] },
+                    { name: 'requestor_department', label: 'Requestor Department', type: 'select', required: true, options: ['Manufacturing', 'Quality Control', 'Engineering', 'Operations', 'Maintenance', 'Safety', 'Regulatory Affairs', 'Management', 'Other'] },
+                    { name: 'requested_participants', label: 'Requested Participants', type: 'textarea', placeholder: 'List specific people, roles, or departments that should participate' },
+                    { name: 'background_information', label: 'Background Information', type: 'textarea', placeholder: 'Provide context, history, or additional background information' },
+                    { name: 'follow_up_required', label: 'Follow-up Required?', type: 'radio', required: true, options: ['Yes', 'No'] },
+                    { name: 'follow_up_details', label: 'Follow-up Details', type: 'textarea', placeholder: 'Specify what type of follow-up actions or meetings are needed' },
+                    { name: 'estimated_duration', label: 'Estimated Duration', type: 'select', options: ['30 minutes', '1 hour', '2 hours', 'Half day', 'Full day', 'Multiple days'] },
+                    { name: 'preferred_date', label: 'Preferred Date', type: 'date' },
+                    { name: 'alternative_dates', label: 'Alternative Dates', type: 'textarea', placeholder: 'List 2-3 alternative dates if preferred date is not available' }
+                ]
+            }
+        };
+
+        let currentFormId = null;
+
+        // Show section (Dashboard or Forms)
+        function showSection(sectionId) {
+            // Update nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update sections
+            document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+
+            // Reset forms section to selection view
+            if (sectionId === 'forms') {
+                backToFormSelection();
+            }
+        }
+
+        // Select a form to fill out
+        function selectForm(formId) {
+            currentFormId = formId;
+            const template = formTemplates[formId];
+            
+            if (!template) {
+                alert('Form template not found!');
+                return;
+            }
+
+            // Update form header
+            document.getElementById('currentFormTitle').textContent = template.name;
+            document.getElementById('currentFormDescription').textContent = template.description;
+
+            // Generate form fields
+            generateFormFields(template.fields);
+
+            // Show form filling view
+            document.getElementById('formSelection').style.display = 'none';
+            document.getElementById('formFilling').style.display = 'block';
+        }
+
+        // Generate dynamic form fields
+        function generateFormFields(fields) {
+            const container = document.getElementById('formFields');
+            container.innerHTML = '';
+
+            fields.forEach(field => {
+                const fieldDiv = document.createElement('div');
+                fieldDiv.className = 'form-field';
+
+                const label = document.createElement('label');
+                label.innerHTML = field.label + (field.required ? ' <span class="required">*</span>' : '');
+                fieldDiv.appendChild(label);
+
+                let input;
+
+                switch (field.type) {
+                    case 'textarea':
+                        input = document.createElement('textarea');
+                        input.placeholder = field.placeholder || '';
+                        break;
+                    
+                    case 'select':
+                        input = document.createElement('select');
+                        input.innerHTML = '<option value="">Choose an option...</option>';
+                        if (field.options) {
+                            field.options.forEach(option => {
+                                const optionEl = document.createElement('option');
+                                optionEl.value = option;
+                                optionEl.textContent = option;
+                                input.appendChild(optionEl);
+                            });
+                        }
+                        break;
+                    
+                    case 'radio':
+                        const radioGroup = document.createElement('div');
+                        radioGroup.className = 'radio-group';
+                        if (field.options) {
+                            field.options.forEach(option => {
+                                const radioDiv = document.createElement('div');
+                                radioDiv.className = 'radio-item';
+                                
+                                const radioInput = document.createElement('input');
+                                radioInput.type = 'radio';
+                                radioInput.name = field.name;
+                                radioInput.value = option;
+                                radioInput.id = `${field.name}_${option.replace(/\s+/g, '_')}`;
+                                
+                                const radioLabel = document.createElement('label');
+                                radioLabel.htmlFor = radioInput.id;
+                                radioLabel.textContent = option;
+                                radioLabel.style.fontWeight = 'normal';
+                                
+                                radioDiv.appendChild(radioInput);
+                                radioDiv.appendChild(radioLabel);
+                                radioGroup.appendChild(radioDiv);
+                            });
+                        }
+                        fieldDiv.appendChild(radioGroup);
+                        container.appendChild(fieldDiv);
+                        return;
+                    
+                    case 'checkbox':
+                        input = document.createElement('input');
+                        input.type = 'checkbox';
+                        input.style.width = 'auto';
+                        input.style.marginRight = '10px';
+                        break;
+                    
+                    default:
+                        input = document.createElement('input');
+                        input.type = field.type || 'text';
+                        input.placeholder = field.placeholder || '';
+                }
+
+                input.name = field.name;
+                input.required = field.required || false;
+                
+                fieldDiv.appendChild(input);
+                container.appendChild(fieldDiv);
+            });
+        }
+
+        // Back to form selection
+        function backToFormSelection() {
+            document.getElementById('formSelection').style.display = 'block';
+            document.getElementById('formFilling').style.display = 'none';
+            currentFormId = null;
+        }
+
+        // Clear form
+        function clearForm() {
+            if (confirm('Are you sure you want to clear all form data?')) {
+                document.getElementById('dynamicForm').reset();
+            }
+        }
+
+        // Save draft
+        function saveDraft() {
+            if (!currentFormId) return;
+
+            const formData = new FormData(document.getElementById('dynamicForm'));
+            const data = Object.fromEntries(formData.entries());
+            
+            localStorage.setItem(`flexform_draft_${currentFormId}`, JSON.stringify(data));
+            
+            // Show success message
+            showMessage('Draft saved successfully!', 'success');
+        }
+
+        // Submit form
+        document.getElementById('dynamicForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!currentFormId) return;
+
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Add metadata
+            data.form_type = currentFormId;
+            data.submitted_at = new Date().toISOString();
+            data.form_name = formTemplates[currentFormId].name;
+
+            try {
+                // Try to save to database first
+                if (isConnectedToDatabase && supabaseClient) {
+                    console.log('💾 Saving to database...');
+                    
+                    // Create a record for form_submissions table
+                    const dbRecord = {
+                        form_type: data.form_type,
+                        form_name: data.form_name,
+                        form_data: JSON.stringify(data),
+                        submitted_at: data.submitted_at,
+                        user_email: data.email || 'anonymous@user.com'
+                    };
+
+                    const { error } = await supabaseClient
+                        .from('gemba_requests')
+                        .insert([dbRecord]);
+
+                    if (error) {
+                        console.error('Database save failed:', error);
+                        // Fall back to localStorage
+                        saveToLocalStorage(data);
+                        showMessage('Saved locally (database error: ' + error.message + ')', 'warning');
+                    } else {
+                        console.log('✅ Saved to database successfully');
+                        showMessage('Form submitted to database successfully!', 'success');
+                    }
+                } else {
+                    // Save to localStorage when no database connection
+                    saveToLocalStorage(data);
+                    showMessage('Form saved locally (no database connection)', 'success');
+                }
+            } catch (error) {
+                console.error('Submission error:', error);
+                saveToLocalStorage(data);
+                showMessage('Saved locally (error: ' + error.message + ')', 'warning');
+            }
+
+            // Update dashboard stats
+            updateDashboardStats();
+
+            // Clear draft
+            localStorage.removeItem(`flexform_draft_${currentFormId}`);
+
+            // Return to selection
+            setTimeout(() => {
+                backToFormSelection();
+            }, 2000);
+        });
+
+        // Helper function to save to localStorage
+        function saveToLocalStorage(data) {
+            const submissions = JSON.parse(localStorage.getItem('flexform_submissions') || '[]');
+            submissions.push(data);
+            localStorage.setItem('flexform_submissions', JSON.stringify(submissions));
+        }
+
+        // Show message
+        function showMessage(message, type = 'success') {
+            const messageDiv = document.createElement('div');
+            if (type === 'success') {
+                messageDiv.className = 'success-message';
+            } else if (type === 'warning') {
+                messageDiv.className = 'warning-message';
+            } else {
+                messageDiv.className = 'error-message';
+            }
+            messageDiv.textContent = message;
+            
+            const formContainer = document.querySelector('.form-container');
+            formContainer.insertBefore(messageDiv, formContainer.firstChild);
+            
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+
+        // Update dashboard stats
+        async function updateDashboardStats() {
+            try {
+                console.log('Updating dashboard stats...');
+                
+                // Get localStorage data
+                const localSubmissions = JSON.parse(localStorage.getItem('flexform_submissions') || '[]');
+                console.log('Local submissions:', localSubmissions.length);
+                
+                let totalCount = localSubmissions.length;
+                let monthCount = localSubmissions.filter(sub => {
+                    const date = new Date(sub.submitted_at);
+                    const now = new Date();
+                    return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+                }).length;
+
+                // If connected to database, get database counts too
+                if (isConnectedToDatabase && supabaseClient) {
+                    try {
+                        console.log('Fetching database statistics...');
+                        
+                        // Get count from gemba_requests table (primary data source)
+                        const { count: dbTotalCount, error: totalError } = await supabaseClient
+                            .from('gemba_requests')
+                            .select('*', { count: 'exact', head: true });
+
+                        if (totalError) {
+                            console.error('Error fetching gemba_requests count:', totalError);
+                            console.log('Fallback: Using localStorage data only');
+                        } else {
+                            totalCount += (dbTotalCount || 0);
+                            console.log('Database gemba_requests:', dbTotalCount);
+                        }
+
+                        // Also try form_submissions table (backup for new entries)
+                        try {
+                            const { count: gembaCount, error: gembaError } = await supabaseClient
+                                .from('form_submissions')
+                                .select('*', { count: 'exact', head: true })
+                                .eq('is_template', false);  // Only count actual submissions, not templates
+
+                            if (!gembaError && gembaCount) {
+                                totalCount += gembaCount;
+                                console.log('Database form_submissions (non-templates):', gembaCount);
+                            }                            }
+                        } catch (gembaError) {
+                            console.log('form_submissions table empty or not found');
+                        }
+
+                        // Get this month's count from database
+                        const now = new Date();
+                        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+                        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).toISOString();
+
+                        // Check gemba_requests for this month (primary data source)
+                        const { count: dbMonthCount, error: monthError } = await supabaseClient
+                            .from('gemba_requests')
+                            .select('*', { count: 'exact', head: true })
+                            .gte('submitted_at', startOfMonth)
+                            .lte('submitted_at', endOfMonth);
+
+                        if (monthError) {
+                            console.error('Error fetching gemba_requests month count:', monthError);
+                        } else {
+                            monthCount += (dbMonthCount || 0);
+                            console.log('Database gemba_requests this month:', dbMonthCount);
+                        }
+
+                        // Also try form_submissions for this month (backup)
+                        try {
+                            // For now, include all gemba_requests as they are likely recent imported data
+                            const { count: gembaMonthCount, error: gembaMonthError } = await supabaseClient
+                                .from('form_submissions')
+                                .select('*', { count: 'exact', head: true })
+                                .eq('is_template', false);  // Only count actual submissions, not templates
+
+                            if (!gembaMonthError && gembaMonthCount) {
+                                monthCount += gembaMonthCount;
+                                console.log('Database form_submissions this month (non-templates):', gembaMonthCount);
+                            }                            }
+                        } catch (gembaMonthError) {
+                            console.log('form_submissions table empty or not found for monthly query');
+                        }
+
+                    } catch (dbError) {
+                        console.error('Database query error:', dbError);
+                    }
+                }
+
+                // Update UI elements
+                const totalElement = document.getElementById('totalSubmissions');
+                const monthElement = document.getElementById('thisMonth');
+                
+                const localMonthCount = localSubmissions.filter(sub => {
+                    const date = new Date(sub.submitted_at);
+                    const now = new Date();
+                    return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+                }).length;
+                
+                if (totalElement) {
+                    totalElement.textContent = totalCount;
+                    const dbTotalCount = totalCount - localSubmissions.length;
+                    totalElement.title = `Local: ${localSubmissions.length}, Database: ${dbTotalCount} (Form Submissions + Gemba Records)`;
+                }
+                if (monthElement) {
+                    const dbMonthCount = monthCount - localMonthCount;
+                    monthElement.title = `Local: ${localMonthCount}, Database: ${dbMonthCount}`;
+                    monthElement.textContent = monthCount;
+                }
+                
+                console.log('Dashboard updated - Total:', totalCount, 'This month:', monthCount);
+                
+            } catch (error) {
+                console.error('Error updating dashboard stats:', error);
+            }
+        }
+
+        // Database connection variables
+        let supabaseClient = null;
+        let isConnectedToDatabase = false;
+
+        // Initialize database connection
+        async function initializeDatabase() {
+            try {
+                // Use EMBEDDED_CONFIG for GitHub Pages
+                let supabaseUrl = '';
+                let supabaseAnonKey = '';
+                
+                // Priority: EMBEDDED_CONFIG first (GitHub Pages)
+                if (window.EMBEDDED_CONFIG) {
+                    supabaseUrl = window.EMBEDDED_CONFIG.SUPABASE_URL;
+                    supabaseAnonKey = window.EMBEDDED_CONFIG.SUPABASE_ANON_KEY;
+                    console.log('✅ Using EMBEDDED_CONFIG from GitHub Pages');
+                }
+                
+                console.log('� Using embedded configuration for GitHub Pages');
+                console.log('�🔍 Checking available configurations...');
+                console.log('FLEXFORM_SECURE_CONFIG available:', !!window.FLEXFORM_SECURE_CONFIG);
+                console.log('FLEXFORM_CONFIG available:', !!window.FLEXFORM_CONFIG);
+                console.log('secureConfigLoader available:', !!window.secureConfigLoader);
+                
+                // Try external config first, fallback to embedded
+                if (window.FLEXFORM_SECURE_CONFIG && window.secureConfigLoader) {
+                    console.log('📱 Loading secure configuration...');
+                    const config = await window.secureConfigLoader.getSecureConfig(false);
+                    supabaseUrl = config.supabaseUrl;
+                    supabaseAnonKey = config.supabaseAnonKey;
+                    console.log('✅ Secure config loaded successfully');
+                } else if (window.FLEXFORM_CONFIG) {
+                    console.log('📄 Loading standard configuration...');
+                    supabaseUrl = window.FLEXFORM_CONFIG.SUPABASE_URL;
+                    supabaseAnonKey = window.FLEXFORM_CONFIG.SUPABASE_ANON_KEY;
+                    console.log('✅ Standard config loaded successfully');
+                }
+                
+                // Fallback check: if external configs failed, ensure we have EMBEDDED_CONFIG
+                if (!supabaseUrl && window.EMBEDDED_CONFIG) {
+                    console.log('🔄 External configs failed - falling back to EMBEDDED_CONFIG');
+                    supabaseUrl = window.EMBEDDED_CONFIG.SUPABASE_URL;
+                    supabaseAnonKey = window.EMBEDDED_CONFIG.SUPABASE_ANON_KEY;
+                }
+                
+                console.log('🔑 Final credentials check:');
+                console.log('  URL:', supabaseUrl ? 'Found' : 'MISSING');
+                console.log('  Key length:', supabaseAnonKey ? supabaseAnonKey.length : 0);
+                console.log('  Key starts with eyJ:', supabaseAnonKey ? supabaseAnonKey.startsWith('eyJ') : false);
+                console.log('  Supabase library:', !!window.supabase);
+                console.log('  EMBEDDED_CONFIG check:', !!window.EMBEDDED_CONFIG);
+                if (window.EMBEDDED_CONFIG) {
+                    console.log('  EMBEDDED_CONFIG URL:', window.EMBEDDED_CONFIG.SUPABASE_URL ? 'Found' : 'Missing');
+                    console.log('  EMBEDDED_CONFIG KEY:', window.EMBEDDED_CONFIG.SUPABASE_ANON_KEY ? 'Found' : 'Missing');
+                }
+                
+                if (!window.supabase) {
+                    throw new Error('Supabase library not loaded');
+                }
+                
+                if (supabaseUrl && supabaseAnonKey && supabaseAnonKey !== 'your-anon-key-here') {
+                    console.log('🔄 Creating Supabase client...');
+                    supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+                    
+                    // Test connection immediately
+                    console.log('🧪 Testing database connection...');
+                    
+                    // *** DIRECT TABLE TEST ***
+                    console.log('🧪 DIRECT TABLE TEST: Checking gemba_requests table...');
+                    try {
+                        const { data: testData, error: testError, count: testCount } = await supabaseClient
+                            .from('gemba_requests')
+                            .select('*', { count: 'exact' })
+                            .limit(5);
+                        
+                        console.log('📊 DIRECT TEST RESULTS:');
+                        console.log('  - Error:', testError);
+                        console.log('  - Total count:', testCount);
+                        console.log('  - Sample records:', testData);
+                        
+                        if (testData && testData.length > 0) {
+                            console.log('  - First record columns:', Object.keys(testData[0]));
+                            console.log('  - First record sample:', testData[0]);
+                        }
+                    } catch (directTestError) {
+                        console.error('❌ DIRECT TABLE TEST FAILED:', directTestError);
+                    }                    try {
+                        const { count, error } = await supabaseClient
+                            .from('gemba_requests')
+                            .select('*', { count: 'exact', head: true });
+                        
+                        if (error) {
+                            console.error('❌ Database test failed:', error);
+                            document.getElementById('connectionStatus').innerHTML = 
+                                '<span style="color: #e53e3e;">●</span> Database error: ' + error.message;
+                        } else {
+                            isConnectedToDatabase = true;
+                            console.log('✅ Database connection verified! Found', count, 'records');
+                            document.getElementById('connectionStatus').innerHTML = 
+                                '<span style="color: #38a169;">●</span> Connected to database (' + count + ' records)';
+                            // Load available forms from database
+                            loadAvailableForms();                        }
+                    } catch (testError) {
+                        console.error('❌ Connection test exception:', testError);
+                        isConnectedToDatabase = true; // Still set as connected for basic functionality
+                        document.getElementById('connectionStatus').innerHTML = 
+                            '<span style="color: #f56500;">●</span> Connected (test failed: ' + testError.message + ')';
+                    }
+                } else {
+                    console.log('⚠️ Invalid database credentials - using localStorage');
+                    console.log('  Missing URL:', !supabaseUrl);
+                    console.log('  Missing key:', !supabaseAnonKey);
+                    console.log('  Placeholder key:', supabaseAnonKey === 'your-anon-key-here');
+                    document.getElementById('connectionStatus').innerHTML = 
+                        '<span style="color: #d69e2e;">●</span> Using local storage (add database credentials to sync)';
+                }
+            } catch (error) {
+                console.error('❌ Error initializing database:', error);
+                document.getElementById('connectionStatus').innerHTML = 
+                    '<span style="color: #e53e3e;">●</span> Configuration error - using local storage';
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('� MBC FORM PORTAL v1.0 - Database Connected Successfully �');
+            console.log('Current URL:', window.location.href);
+            console.log('User Agent:', navigator.userAgent);
+            console.log('Last updated:', new Date().toISOString());
+            
+            // Wait for all scripts to load
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            console.log('🔍 Environment check:');
+            console.log('  EMBEDDED_CONFIG:', !!window.EMBEDDED_CONFIG);
+            console.log('  Supabase library:', !!window.supabase);
+            console.log('  SecureSupabaseConnector:', !!window.SecureSupabaseConnector);
+            
+            try {
+                await initializeDatabase();
+                updateDashboardStats();
+                console.log('✅ Initialization complete');
+            } catch (error) {
+                console.error('❌ Initialization error:', error);
+                // Show error in UI
+                document.getElementById('connectionStatus').innerHTML = 
+                    '<span style="color: #e53e3e;">●</span> Initialization failed: ' + error.message;
+            }
+        });
+
+        // Modal functions for data visualization
+        // Load available forms from database
+        async function loadAvailableForms() {
+            const formsContainer = document.getElementById('formsContainer');
+            const availableFormsCount = document.querySelector('.stat-card h3');
+            
+            if (!isConnectedToDatabase || !supabaseClient) {
+                console.log('Database not connected, showing default forms');
+                return;
+            }
+            
+            try {
+                console.log('Loading templates from database...');
+                const { data: templates, error } = await supabaseClient
+                    .from('form_submissions')
+                    .select('*')
+                    .eq('is_template', true);
+                
+                if (error) {
+                    console.error('Error loading templates:', error);
+                    return;
+                }
+                
+                if (templates && templates.length > 0) {
+                    console.log(`Found ${templates.length} templates in database`);
+                    
+                    // Update forms count
+                    availableFormsCount.textContent = templates.length;
+                    
+                    // Clear existing forms and add database templates
+                    formsContainer.innerHTML = '';
+                    
+                    templates.forEach(template => {
+                        const formCard = document.createElement('div');
+                        formCard.className = 'form-card';
+                        formCard.onclick = () => selectDynamicForm(template);
+                        
+                        const fields = JSON.parse(template.form_fields || '[]');
+                        const fieldCount = fields.length;
+                        
+                        formCard.innerHTML = `
+                            <div class="form-card-header">
+                                <h3>${template.form_name || 'Untitled Form'}</h3>
+                                <span class="field-badge">${fieldCount} Fields</span>
+                            </div>
+                            <p>${template.form_description || 'Dynamic form created by admin'}</p>
+                            <button class="form-btn" onclick="event.stopPropagation(); selectDynamicForm(template)">
+                                Select Form
+                            </button>
+                        `;
+                        
+                        formsContainer.appendChild(formCard);
+                    });
+                } else {
+                    console.log('No templates found in database');
+                }
+            } catch (error) {
+                console.error('Error loading forms:', error);
+            }
+        }
+        
+        // Handle dynamic form selection
+        function selectDynamicForm(template) {
+            console.log('Selected dynamic form:', template.form_name);
+            
+            // Hide form selection and show dynamic form
+            document.getElementById('formSelection').style.display = 'none';
+            
+            // Create dynamic form based on template
+            const formContainer = document.getElementById('dynamicFormContainer') || createDynamicFormContainer();
+            formContainer.innerHTML = generateDynamicForm(template);
+            formContainer.style.display = 'block';
+        }
+        
+        // Create dynamic form container if it doesn't exist
+        function createDynamicFormContainer() {
+            const container = document.createElement('div');
+            container.id = 'dynamicFormContainer';
+            container.style.display = 'none';
+            document.getElementById('forms').appendChild(container);
+            return container;
+        }
+        
+        // Generate dynamic form HTML
+        function generateDynamicForm(template) {
+            const fields = JSON.parse(template.form_fields || '[]');
+            
+            let formHTML = `
+                <div class="form-container">
+                    <h2>${template.form_title || template.form_name}</h2>
+                    <p>${template.form_description || ''}</p>
+                    <form id="dynamicForm" onsubmit="submitDynamicForm(event, '${template.form_name}')">
+            `;
+            
+            fields.forEach(field => {
+                switch(field.type) {
+                    case 'text':
+                        formHTML += `<div class="form-field">
+                            <label>${field.label}${field.required ? ' *' : ''}</label>
+                            <input type="text" name="${field.id}" ${field.required ? 'required' : ''} />
+                        </div>`;
+                        break;
+                    case 'textarea':
+                        formHTML += `<div class="form-field">
+                            <label>${field.label}${field.required ? ' *' : ''}</label>
+                            <textarea name="${field.id}" ${field.required ? 'required' : ''}></textarea>
+                        </div>`;
+                        break;
+                    case 'select':
+                        const options = field.options || [];
+                        formHTML += `<div class="form-field">
+                            <label>${field.label}${field.required ? ' *' : ''}</label>
+                            <select name="${field.id}" ${field.required ? 'required' : ''}>
+                                <option value="">Select...</option>
+                                ${options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                            </select>
+                        </div>`;
+                        break;
+                }
+            });
+            
+            formHTML += `
+                        <div class="form-actions">
+                            <button type="button" onclick="backToForms()" class="btn-secondary">Back to Forms</button>
+                            <button type="submit" class="btn-primary">Submit Form</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            
+            return formHTML;
+        }
+        
+        // Handle dynamic form submission
+        async function submitDynamicForm(event, formName) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const formData = new FormData(form);
+            const data = {};
+            
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            
+            const submissionData = {
+                form_type: 'user_submission',
+                form_name: formName,
+                form_data: JSON.stringify(data),
+                submitted_at: new Date().toISOString(),
+                user_email: data.email || 'anonymous@user.com'
+            };
+            
+            // Save to gemba_requests table (as specified)
+            if (isConnectedToDatabase && supabaseClient) {
+                try {
+                    const { error } = await supabaseClient
+                        .from('gemba_requests')
+                        .insert([submissionData]);
+                    
+                    if (error) {
+                        console.error('Database save error:', error);
+                        showMessage('Form submitted but failed to save to database', 'warning');
+                    } else {
+                        console.log('Form submitted successfully to gemba_requests');
+                        showMessage('Form submitted successfully!', 'success');
+                        form.reset();
+                        setTimeout(() => backToForms(), 2000);
+                    }
+                } catch (dbError) {
+                    console.error('Database error:', dbError);
+                    showMessage('Form submitted but database error occurred', 'warning');
+                }
+            } else {
+                showMessage('Form submitted (local only - no database connection)', 'warning');
+            }
+        }
+        
+        // Back to forms list
+        function backToForms() {
+            document.getElementById('formSelection').style.display = 'block';
+            const dynamicContainer = document.getElementById('dynamicFormContainer');
+            if (dynamicContainer) {
+                dynamicContainer.style.display = 'none';
+            }
+        }
+        async function showDataModal(type) {
+            try {
+                console.log('Opening modal for type:', type);
+                
+                const modal = document.getElementById('dataModal');
+                const modalTitle = document.getElementById('modalTitle');
+                const modalTable = document.getElementById('modalTable');
+                const exportBtn = document.getElementById('exportTableData');
+                
+                if (!modal || !modalTitle || !modalTable || !exportBtn) {
+                    console.error('Modal elements not found');
+                    return;
+                }
+                
+                // Show loading state
+                modalTable.innerHTML = '<div class="loading-data">Loading data...</div>';
+                modal.style.display = 'flex';
+                
+                // Get data based on type
+                let data = [];
+                let title = '';
+                
+                const localSubmissions = JSON.parse(localStorage.getItem('flexform_submissions') || '[]');
+                console.log('Found local submissions:', localSubmissions.length);
+                
+                let dbSubmissions = [];
+                
+                // Fetch database data if connected
+                if (isConnectedToDatabase && supabaseClient) {
+                    try {
+                        console.log('Fetching database submissions directly from gemba_requests...');
+                        
+                        // SIMPLIFIED: Just query gemba_requests table directly
+                        let directQuery = supabaseClient.from('gemba_requests')
+                            .select('*')
+                            .limit(10000);
+                        
+                        if (type === 'month') {
+                            const now = new Date();
+                            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+                            const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).toISOString();
+                            // Skip date filtering for now to get all data
+                            // directQuery = directQuery.gte('submitted_at', startOfMonth).lte('submitted_at', endOfMonth);
+                        }
+                        
+                        const { data: directData, error: directError } = await directQuery;
+                        
+                        console.log('🔍 SIMPLIFIED QUERY RESULTS:');
+                        console.log('  - Error:', directError);
+                        console.log('  - Data length:', directData ? directData.length : 0);
+                        console.log('  - First record:', directData && directData[0] ? directData[0] : 'none');
+                        
+                        if (!directError && directData) {
+                            dbSubmissions = directData;
+                        } else {
+                            console.error('❌ Direct query failed:', directError);
+                            dbSubmissions = [];
+                        }                        
+                        console.log(`✅ FIXED: Fetched ${dbSubmissions.length} records from gemba_requests`);
+                        console.log('DEBUG: Modal data breakdown:');
+                        console.log('  - Direct query from gemba_requests:', dbSubmissions.length);
+                        console.log('  - Records actually fetched:', dbSubmissions.length);
+                        console.log('  - Total combined:', dbSubmissions.length);                        if (dbSubmissions.length > 0) {
+                            console.log('Sample database record:', dbSubmissions[0]);
+                        }
+                        
+                    } catch (dbError) {
+                        console.error('Database fetch error:', dbError);
+                    }
+                }
+            
+            switch(type) {
+                case 'forms':
+                    title = 'Available Forms';
+                    // Try to load forms from database
+                    if (isConnectedToDatabase && supabaseClient) {
+                        try {
+                            const { data: templates, error } = await supabaseClient
+                                .from('form_submissions')
+                                .select('*')
+                                .eq('is_template', true);
+                            
+                            if (!error && templates && templates.length > 0) {
+                                data = templates.map(template => ({
+                                    name: template.form_name || 'Untitled Form',
+                                    description: template.form_description || 'Dynamic form created by admin',
+                                    status: 'Active',
+                                    created: template.created_at ? new Date(template.created_at).toLocaleDateString() : 'Unknown',
+                                    fields: JSON.parse(template.form_fields || '[]').length + ' fields'
+                                }));
+                            } else {
+                                data = [{ name: 'No templates found', description: 'Admin has not created any templates yet', status: 'N/A', created: 'N/A' }];
+                            }
+                        } catch (error) {
+                            console.error('Error loading templates for modal:', error);
+                            data = [{ name: 'Error loading templates', description: 'Database connection error', status: 'Error', created: 'N/A' }];
+                        }
+                    } else {
+                        data = [
+                            { name: 'Contact Form', description: 'Basic contact information form', status: 'Active', created: '2025-10-01' },
+                            { name: 'Gemba Request Form', description: 'Submit requests for Gemba walks and observations', status: 'Active', created: '2025-10-01' },
+                            { name: 'Feedback Form', description: 'Collect feedback and suggestions', status: 'Active', created: '2025-10-01' },
+                            { name: 'Event Registration', description: 'Register for company events and meetings', status: 'Active', created: '2025-10-01' }
+                        ];
+                    }
+                    break;                case 'total':
+                    console.log('🔍 MODAL TABLE DATA PREP:');
+                    console.log('  - localSubmissions.length:', localSubmissions.length);
+                    console.log('  - dbSubmissions.length:', dbSubmissions.length);
+                    console.log('  - dbSubmissions first 2 records:', dbSubmissions.slice(0, 2));                    title = `All Submissions (Local: ${localSubmissions.length}, Database: ${dbSubmissions.length})`;
+                    
+                    // Combine local and database data
+                    const allSubmissions = [...localSubmissions, ...dbSubmissions.map(dbSub => {
+                        // Convert database format to local format
+                        let parsed = {};
+                        
+                        // Handle different database table formats
+                        if (dbSub.form_data) {
+                            // form_submissions table format
+                            try {
+                                parsed = JSON.parse(dbSub.form_data);
+                            } catch (e) {
+                                console.warn('Failed to parse form_data:', e);
+                                parsed = {};
+                            }
+                        } else {
+                            // gemba_requests table format - fields are directly in the record
+                            parsed = { ...dbSub };
+                        }
+                        
+                        return {
+                            ...parsed,
+                            form_name: dbSub.form_name || 'Unknown Form',
+                            form_type: dbSub.form_type || 'form',
+                            submitted_at: dbSub.submitted_at,
+                            user_email: dbSub.user_email || dbSub.email,
+                            created_by: dbSub.created_by || dbSub.user_email,
+                            department: dbSub.department,
+                            source: 'database'
+                        };
+                    })];
+                    
+                    data = allSubmissions.map(sub => {
+                        // Create a copy with all original fields plus formatted dates
+                        const fullData = { ...sub };
+                        
+                        // Add formatted date/time fields
+                        if (sub.submitted_at) {
+                            fullData.submitted_date = new Date(sub.submitted_at).toLocaleDateString();
+                            fullData.submitted_time = new Date(sub.submitted_at).toLocaleTimeString();
+                        }
+                        
+                        // Add source indicator
+                        fullData.data_source = sub.source || 'local';
+                        
+                        // Remove the original ISO timestamp for cleaner display
+                        delete fullData.submitted_at;
+                        delete fullData.source;
+                        
+                        return fullData;
+                    });
+                    
+                    console.log('Final processed data for modal:', data.length, 'records');
+                    if (data.length > 0) {
+                        console.log('Sample processed record:', data[0]);
+                    }
+                    break;
+                case 'month':
+                    title = 'This Month\'s Submissions';
+                    
+                    // Filter local submissions for this month
+                    const thisMonthLocal = localSubmissions.filter(sub => {
+                        const date = new Date(sub.submitted_at);
+                        const now = new Date();
+                        return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+                    });
+                    
+                    // Filter database submissions for this month (since we didn't filter in SQL)
+                    const thisMonthDB = dbSubmissions.filter(dbSub => {
+                        // Try different date field names that might exist in the imported data
+                        const dateFields = ['submitted_at', 'created_at', 'date', 'timestamp', 'request_date'];
+                        
+                        for (const field of dateFields) {
+                            if (dbSub[field]) {
+                                try {
+                                    const date = new Date(dbSub[field]);
+                                    const now = new Date();
+                                    if (date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear()) {
+                                        return true;
+                                    }
+                                } catch (e) {
+                                    // Invalid date, continue to next field
+                                }
+                            }
+                        }
+                        
+                        // If no valid date found, include in this month for now (since data might be recent)
+                        console.log('No valid date found for record, including in this month:', Object.keys(dbSub));
+                        return true;
+                    });
+
+                    // Combine local and database data (database filtered by JavaScript)
+                    const thisMonthAll = [...thisMonthLocal, ...thisMonthDB.map(dbSub => {
+                        // Convert database format to local format
+                        let parsed = {};
+                        
+                        // Handle different database table formats
+                        if (dbSub.form_data) {
+                            // form_submissions table format
+                            try {
+                                parsed = JSON.parse(dbSub.form_data);
+                            } catch (e) {
+                                console.warn('Failed to parse form_data:', e);
+                                parsed = {};
+                            }
+                        } else {
+                            // gemba_requests table format - fields are directly in the record
+                            parsed = { ...dbSub };
+                        }
+                        
+                        return {
+                            ...parsed,
+                            form_name: dbSub.form_name || 'Unknown Form',
+                            form_type: dbSub.form_type || 'form',
+                            submitted_at: dbSub.submitted_at,
+                            user_email: dbSub.user_email || dbSub.email,
+                            created_by: dbSub.created_by || dbSub.user_email,
+                            department: dbSub.department,
+                            source: 'database'
+                        };
+                    })];
+                    
+                    title = `This Month's Submissions (Local: ${thisMonthLocal.length}, Database: ${thisMonthDB.length})`;
+                    
+                    data = thisMonthAll.map(sub => {
+                        // Create a copy with all original fields plus formatted dates
+                        const fullData = { ...sub };
+                        
+                        // Add formatted date/time fields
+                        if (sub.submitted_at) {
+                            fullData.submitted_date = new Date(sub.submitted_at).toLocaleDateString();
+                            fullData.submitted_time = new Date(sub.submitted_at).toLocaleTimeString();
+                        }
+                        
+                        // Add source indicator
+                        fullData.data_source = sub.source || 'local';
+                        
+                        // Remove the original ISO timestamp for cleaner display
+                        delete fullData.submitted_at;
+                        delete fullData.source;
+                        
+                        return fullData;
+                    });
+                    
+                    console.log('This month processed data:', data.length, 'records');
+                    break;
+            }            modalTitle.textContent = title;
+            
+            // Create table
+            createDataTable(modalTable, data, type);
+            
+            // Show modal
+            modal.style.display = 'flex';
+            
+            // Set up export functionality
+            exportBtn.onclick = () => exportTableToExcel(data, title);
+            
+            } catch (error) {
+                console.error('Error opening modal:', error);
+                alert('Error opening data view: ' + error.message);
+            }
+        }
+
+        function createDataTable(container, data, type) {
+            container.innerHTML = '';
+            
+            if (data.length === 0) {
+                container.innerHTML = '<div class="no-data">No data available</div>';
+                return;
+            }
+            
+            // Create table
+            const table = document.createElement('table');
+            table.className = 'data-table';
+            
+            // Create header
+            const thead = document.createElement('thead');
+            const headerRow = document.createElement('tr');
+            
+            const headers = Object.keys(data[0]);
+            headers.forEach(header => {
+                const th = document.createElement('th');
+                // Better header formatting
+                let headerText = header.replace(/_/g, ' ');
+                headerText = headerText.replace(/\b\w/g, l => l.toUpperCase());
+                th.textContent = headerText;
+                th.title = 'Click to sort by ' + headerText;
+                th.addEventListener('click', () => sortTable(table, headers.indexOf(header)));
+                
+                // Add sorting indicator
+                const sortIcon = document.createElement('i');
+                sortIcon.className = 'fas fa-sort sort-icon';
+                sortIcon.style.marginLeft = '5px';
+                sortIcon.style.opacity = '0.3';
+                th.appendChild(sortIcon);
+                
+                headerRow.appendChild(th);
+            });
+            
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+            
+            // Create body
+            const tbody = document.createElement('tbody');
+            data.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                tr.className = index % 2 === 0 ? 'even' : 'odd';
+                
+                headers.forEach(header => {
+                    const td = document.createElement('td');
+                    td.textContent = row[header] || '-';
+                    tr.appendChild(td);
+                });
+                
+                tbody.appendChild(tr);
+            });
+            
+            table.appendChild(tbody);
+            container.appendChild(table);
+        }
+
+        function sortTable(table, columnIndex) {
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            
+            rows.sort((a, b) => {
+                const aText = a.cells[columnIndex].textContent.trim();
+                const bText = b.cells[columnIndex].textContent.trim();
+                
+                // Check if it's a number
+                if (!isNaN(aText) && !isNaN(bText)) {
+                    return parseFloat(aText) - parseFloat(bText);
+                }
+                
+                // Check if it's a date
+                const aDate = Date.parse(aText);
+                const bDate = Date.parse(bText);
+                if (!isNaN(aDate) && !isNaN(bDate)) {
+                    return aDate - bDate;
+                }
+                
+                // String comparison
+                return aText.localeCompare(bText);
+            });
+            
+            // Clear and re-append sorted rows
+            tbody.innerHTML = '';
+            rows.forEach(row => tbody.appendChild(row));
+        }
+
+        function exportTableToExcel(data, filename) {
+            if (data.length === 0) {
+                alert('No data to export');
+                return;
+            }
+            
+            // Convert data to CSV
+            const headers = Object.keys(data[0]);
+            const csvContent = [
+                headers.join(','),
+                ...data.map(row => 
+                    headers.map(header => 
+                        '"' + (row[header] || '').toString().replace(/"/g, '""') + '"'
+                    ).join(',')
+                )
+            ].join('\n');
+            
+            // Create download link
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename.replace(/\s+/g, '_') + '_' + new Date().toISOString().split('T')[0] + '.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function closeDataModal() {
+            document.getElementById('dataModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(e) {
+            const modal = document.getElementById('dataModal');
+            if (e.target === modal) {
+                closeDataModal();
+            }
+        });
+    </script>
+
+    <!-- Data Modal -->
+    <div id="dataModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 id="modalTitle">Data View</h2>
+                <div class="modal-actions">
+                    <button id="exportTableData" class="btn-export">
+                        <i class="fas fa-download"></i> Export CSV
+                    </button>
+                    <button onclick="closeDataModal()" class="btn-close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div id="modalTable" class="table-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-container {
+            background: white;
+            border-radius: 15px;
+            max-width: 95vw;
+            max-height: 90vh;
+            width: 1200px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-export, .btn-close {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-export {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .btn-export:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-close {
+            background: rgba(255, 100, 100, 0.8);
+            color: white;
+        }
+
+        .btn-close:hover {
+            background: rgba(255, 100, 100, 1);
+        }
+
+        .modal-body {
+            padding: 0;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .table-container {
+            overflow: auto;
+            max-height: 60vh;
+            padding: 20px;
+            width: 100%;
+        }
+
+        .data-table {
+            width: max-content;
+            min-width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            background: white;
+            white-space: nowrap;
+        }
+
+        .data-table th {
+            background: #f8fafc;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #2d3748;
+            border-bottom: 2px solid #e2e8f0;
+            cursor: pointer;
+            user-select: none;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            min-width: 120px;
+            white-space: nowrap;
+        }
+
+        .data-table th:hover {
+            background: #edf2f7;
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #4a5568;
+            max-width: 200px;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+
+        .sort-icon {
+            transition: all 0.3s ease;
+        }
+
+        .data-table th:hover .sort-icon {
+            opacity: 1 !important;
+        }
+
+        .data-table tr.even {
+            background: #f8fafc;
+        }
+
+        .data-table tr:hover {
+            background: #edf2f7;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #718096;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .modal-container {
+                width: 95vw;
+                height: 90vh;
+            }
+            
+            .data-table {
+                font-size: 0.8rem;
+            }
+            
+            .data-table th,
+            .data-table td {
+                padding: 8px 10px;
+            }
+        }
+    </style>
+</body>
+<!-- Rebuild: $(date +%s) -->
+</html>
